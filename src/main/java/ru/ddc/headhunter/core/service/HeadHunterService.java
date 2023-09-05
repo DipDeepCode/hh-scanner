@@ -1,21 +1,21 @@
-package ru.ddc.headhunter.service;
+package ru.ddc.headhunter.core.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.ddc.headhunter.entity.Vacancies;
+import ru.ddc.headhunter.core.dto.Items;
 
 import java.time.LocalDateTime;
 
 @Service
-public class VacancyService {
+public class HeadHunterService {
 
     private final WebClient webClient;
 
-    public VacancyService(WebClient webClient) {
+    public HeadHunterService(WebClient webClient) {
         this.webClient = webClient;
     }
 
-    public Vacancies getVacancyByIdSync(final LocalDateTime dateTime) {
+    public Items getItems(final LocalDateTime dateTime) {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -24,7 +24,7 @@ public class VacancyService {
                         .queryParam("date_from", "{datetime}")
                         .build(dateTime))
                 .retrieve()
-                .bodyToMono(Vacancies.class)
+                .bodyToMono(Items.class)
                 .block();
     }
 }

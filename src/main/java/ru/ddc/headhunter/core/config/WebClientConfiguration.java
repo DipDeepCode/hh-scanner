@@ -1,8 +1,10 @@
-package ru.ddc.headhunter.config;
+package ru.ddc.headhunter.core.config;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +19,9 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @Slf4j
 public class WebClientConfiguration {
-    @Value("${api.base.url}")
+    @Value("${hh.api.base.url}")
     private String baseUrl;
-    @Value("${api.timeout}")
+    @Value("${hh.api.timeout}")
     private int timeout;
 
     @Bean
@@ -33,13 +35,12 @@ public class WebClientConfiguration {
         return WebClient.builder()
                 .baseUrl(baseUrl)
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .filters(exchangeFilterFunctions -> {
-                    exchangeFilterFunctions.add(logRequest());
-                })
+                .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .build();
     }
 
-    private ExchangeFilterFunction logRequest() {
+    @Contract(pure = true)
+    private @NotNull ExchangeFilterFunction logRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
             log.info("Request: {} {}", clientRequest.method(), clientRequest.url());
             clientRequest.headers().forEach((name, values) -> values.forEach(value -> log.info("{}={}", name, value)));

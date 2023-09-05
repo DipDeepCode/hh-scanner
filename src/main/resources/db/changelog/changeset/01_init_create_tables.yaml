@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_table_active_chat
+      author: DipDeepCode
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: chat_pk
+                  name: id
+                  type: bigint
+              - column:
+                  constraints:
+                    nullable: false
+                    unique: true
+                  name: chat_id
+                  type: bigint
+            tableName: active_chat
+
