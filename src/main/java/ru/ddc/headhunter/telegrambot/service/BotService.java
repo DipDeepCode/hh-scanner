@@ -38,7 +38,7 @@ public class BotService extends TelegramLongPollingBot {
             Message message = update.getMessage();
             Long chatId = message.getChatId();
             SendMessage response = new SendMessage();
-            response.setChatId(String.valueOf(chatId));
+            response.setChatId(chatId);
             if (SUBSCRIBE.equalsIgnoreCase(message.getText())) {
                 if (activeChatRepository.findByChatId(chatId).isPresent()) {
                     response.setText("Вы уже подписаны на рассылку");
@@ -70,9 +70,9 @@ public class BotService extends TelegramLongPollingBot {
     }
 
     public void sendHtmlNotification(String notification) {
-        activeChatRepository.findAll().forEach(chatId -> {
+        activeChatRepository.findAll().forEach(activeChat -> {
             try {
-                SendMessage htmlMessage = getHtmlMessage(notification, chatId);
+                SendMessage htmlMessage = getHtmlMessage(notification, activeChat);
                 execute(htmlMessage);
             } catch (TelegramApiException e) {
                 log.info("Не удалось отправить сообщение", e);
